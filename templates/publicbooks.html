@@ -1,0 +1,30 @@
+{% extends "main_books.html" %}
+{% block content %}
+{% include "header.html" %}
+
+<div class="col-md-11 col-md-offset-1 padding-none">
+	<h1>{{ genre.name }}</h1>
+</div>
+<div class="col-md-12">
+	{% for i in items %}
+	<a href='{{url_for('showBook', books_id=i.id ) }}'><h3>{{i.name}}</h3></a>
+	<p>{{i.author}}</p>
+	<p>{{i.price}}</p>
+	<div id="stars">
+		{% if i.rating == 1 %}
+			<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/1_stars.svg/535px-1_stars.svg.png" class="img-responsive">
+		{% elif i.rating == 2 %}
+			<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/3_stars.svg/1024px-3_stars.svg.png" class="img-responsive">
+		{% elif i.rating == 3 %}
+			<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/3_stars.svg/800px-3_stars.svg.png" class="img-responsive">
+		{% elif i.rating == 4 %}
+			<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/4_stars.svg/1280px-4_stars.svg.png" class="img-responsive">
+		{% else %}
+			<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/5_stars.svg/1280px-5_stars.svg.png" class="img-responsive">
+		{% endif %}
+	</div>
+	<div class="col-md-12" id="divider"></div>
+    {% endfor %}
+</div>
+
+{% endblock %}

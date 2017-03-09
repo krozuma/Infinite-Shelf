@@ -1,0 +1,49 @@
+ body {
+    margin-left: 4em;
+    margin-right: 4em;
+    background: url('oak-wood.jpg')
+ }
+
+h1 {
+    text-align: center;
+}
+
+p {
+    font-weight: bold;
+    font-size: 14px;
+    color: white;
+}
+
+img {
+
+    max-height: 30em;
+    max-width: 55em;
+    margin: 0 auto;
+}
+
+#divider {
+    margin-top: 1em;
+    border-top: 2px solid black;
+}
+
+h1, h2 {
+    color: white;
+}
+
+a {
+    color: #1BE3CF;
+    font-weight: bold;
+}
+
+#stars {
+    max-height: 2em;
+    max-width: 5em;
+}
+
+.title {
+    color: white;
+}
+
+.col-md-10-signin {
+    border-top: 50em;
+}

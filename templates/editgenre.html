@@ -1,0 +1,12 @@
+{% include "header.html" %}
+{% extends "main_books.html" %}
+{% block content %}
+
+<form action= "{{url_for('editGenre', genre_id = genre_id, editedGenre = editedGenre)}}" method = 'POST'>
+    <p>Genre:</p>
+    <input type = 'text' size='30' name = 'name' placeholder = '{{editedGenre.name}}'>
+    <input type='submit' value='Save'>
+</form>
+<a href= '{{url_for('showGenres')}}'>Cancel</a>
+
+{% endblock %}

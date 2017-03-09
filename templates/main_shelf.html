@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <title>Infinite Shelf: the place to buy and sell used books</title>
+  </head>
+  <body>
+    <div class="container">
+	  <nav class="navbar navbar navbar-inverse">
+      <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+       <div class="navbar-header">
+       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+         <span class="sr-only">Toggle navigation</span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+       </button>
+       <a class="navbar-brand" href="http://localhost:8000/genres">Infinte Shelf</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li class="dropdown">
+          <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Genres <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="http://localhost:8000/genres/7/books">History</a></li>
+          <li><a href="http://localhost:8000/genres/5/books">Horror</a></li>
+          <li><a href="http://localhost:8000/genres/4/books">Literature</a></li>
+          <li><a href="http://localhost:8000/genres/3/books">Romance</a></li>
+          <li><a href="http://localhost:8000/genres/6/books">Science</a></li>
+          <li><a href="http://localhost:8000/genres/2/books">Science Fiction</a></li>
+        </ul>
+        </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+        </nav>
+
+        <p>Infinite Shelf: the place to buy and sell used books.</p>
+        <img src="static/Bookshelf.jpg" class="img-responsive" alt="Bookshelf with books">
+        <div class="col-md-12" id="divider"></div>
+        {% block content %}
+		{% endblock %}
+    </div>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+{% include "header.html" %}
+{% extends "main_books.html" %}
+{% block content %}
+
+<form action= "{{url_for('newBook', genre_id = genre_id)}}" method = 'POST'>
+
+<p>Title:</p>
+    <input type = 'text' size='30' name = 'name' placeholder = 'Title'>
+<p>Author:</p>
+    <input type= 'text' size='30' name= 'author' placeholder= 'Author'>
+<p>Description:</p>
+    <input type="text" size="60" name = "description" placeholder= "Description">
+<p>Price:</p>
+    <input type = "text" size="30" name="price" placeholder="Price">
+<p>Rating:</p>
+    <input type="text" size="30" name="rating" placeholder="Rating">
+
+<input type='submit' value='Add'>
+</form>
+<a href= '{{url_for('showBooks', genre_id = genre_id)}}'>Cancel</a>
+
+{% endblock %}

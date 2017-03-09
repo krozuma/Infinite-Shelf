@@ -1,0 +1,25 @@
+{% extends "main_books.html" %}
+{% block content %}
+{% include "header.html" %}
+
+<div class="col-md-12">
+  <h3 class="title">{{selected_book.name}}</h3>
+  <p>{{selected_book.author}}</p>
+  <p>{{selected_book.description}}</p>
+  <p>{{selected_book.price}}</p>
+  <div id="stars">
+  {% if selected_book.rating == 1 %}
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/1_stars.svg/535px-1_stars.svg.png" class="img-responsive" alt="One out of five stars">
+  {% elif selected_book.rating == 2 %}
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/3_stars.svg/1024px-3_stars.svg.png" class="img-responsive" alt="Two out of five stars">
+  {% elif selected_book.rating == 3 %}
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/3_stars.svg/800px-3_stars.svg.png" class="img-responsive" alt="Three out of five stars">
+  {% elif selected_book.rating == 4 %}
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/4_stars.svg/1280px-4_stars.svg.png" class="img-responsive" alt="Four out of five stars">
+  {% else %}
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/5_stars.svg/1280px-5_stars.svg.png" class="img-responsive" alt="Five out of five stars">
+  {% endif %}
+  </div>
+</div>
+
+{% endblock %}
