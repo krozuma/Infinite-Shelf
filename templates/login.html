@@ -19,7 +19,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="http://localhost:8000/genres">Infinte Shelf</a>
+        <a class="navbar-brand" href="http://ec2-13-58-229-23.us-east-2.compute.amazonaws.com/genres/genres">Infinte Shelf</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -28,12 +28,13 @@
             <li class="dropdown">
             <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Genres <span class="caret"></span></a>
         <ul class="dropdown-menu">
-            <li><a href="http://localhost:8000/genres/7/books">History</a></li>
-            <li><a href="http://localhost:8000/genres/5/books">Horror</a></li>
-            <li><a href="http://localhost:8000/genres/4/books">Literature</a></li>
-            <li><a href="http://localhost:8000/genres/3/books">Romance</a></li>
-            <li><a href="http://localhost:8000/genres/6/books">Science</a></li>
-            <li><a href="http://localhost:8000/genres/2/books">Science Fiction</a></li>
+            <li><a href="http://ec2-13-58-229-23.us-east-2.compute.amazonaws.com/genres/3/books">History</a></li>
+            <li><a href="http://ec2-13-58-229-23.us-east-2.compute.amazonaws.com/genres/4/books">Horror</a></li>
+            <li><a href="http://ec2-13-58-229-23.us-east-2.compute.amazonaws.com/genres/5/books">Literature</a></li>
+            <li><a href="http://ec2-13-58-229-23.us-east-2.compute.amazonaws.com/genres/6/books">Romance</a></li>
+            <li><a href="http://ec2-13-58-229-23.us-east-2.compute.amazonaws.com/genres/7/books">Science</a></li>
+            <li><a href="http://ec2-13-58-229-23.us-east-2.compute.amazonaws.com/genres/8/books">Science Fiction</a></li>
+            <li><a href="http://ec2-13-58-229-23.us-east-2.compute.amazonaws.com/genres/2/books">Self Help</a></li> 
         </ul>
             </li>
         </ul>
@@ -50,16 +51,7 @@
 
         <p>Infinite Shelf: the place to buy and sell used books.</p>
 
-        <div id="fb-root"></div>
-        <script>(function(d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s); js.id = id;
-            js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=1139288162850132";
-            fjs.parentNode.insertBefore(js, fjs);
-            }(document, 'script', 'facebook-jssdk'));
-        </script>
-
+        
 <!-- GOOGLE PLUS SIGN IN-->
 
         <div class="row">
@@ -67,7 +59,7 @@
             <div id="signInButton">
                 <span class="g-signin"
                 data-scope="openid email"
-                data-clientid="107091660501-dpuu0sejdjlpd1q006cc1v5dcnhcelr7.apps.googleusercontent.com"
+                data-clientid="152609967019-97mrthp93g72ttu2iallt6rh2qp77bfq.apps.googleusercontent.com"
                 data-redirecturi="postmessage"
             data-accesstype="offline"
             data-height="150"
@@ -79,11 +71,7 @@
         </div>
 
         <div class="col-md-2">
-            <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
-            <a href='javascript:sendTokenToServer()'><a class="btn btn-block btn-social btn-lg btn-facebook">
-            <span class="fa fa-facebook"></span> Sign in with Facebook
-            </a></a>
-        </div>
+            </div>
        </div>
 
 
@@ -119,56 +107,6 @@ function signInCallback(authResult) {
   }); } }
 </script>
     </div>
-
-<script>
-  window.fbAsyncInit = function() {
-  FB.init({
-    appId      : '1139288162850132',
-    cookie     : true,  // enable cookies to allow the server to access
-                        // the session
-    xfbml      : true,  // parse social plugins on this page
-    version    : 'v2.8' // use version 2.8
-  });
-  };
-  // Load the SDK asynchronously
-  (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
-  // Here we run a very simple test of the Graph API after login is
-  // successful.  See statusChangeCallback() for when this call is made.
-  function sendTokenToServer() {
-    var access_token = FB.getAuthResponse()['accessToken'];
-    console.log(access_token)
-    console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', function(response) {
-      console.log('Successful login for: ' + response.name);
-     $.ajax({
-      type: 'POST',
-      url: '/fbconnect?state={{STATE}}',
-      processData: false,
-      data: access_token,
-      contentType: 'application/octet-stream; charset=utf-8',
-      success: function(result) {
-        // Handle or verify the server response if necessary.
-        if (result) {
-          $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
-         setTimeout(function() {
-          window.location.href = "/genres";
-         }, 4000);
-
-      } else {
-        $('#result').html('Failed to make a server-side call. Check your configuration and console.');
-         }
-      }
-
-  });
-    });
-  }
-</script>
 
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
