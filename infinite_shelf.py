@@ -97,7 +97,7 @@ def deleteGenre(genre_id):
             session.commit()
             flash("Genre has been deleted.")
             return redirect(url_for('showGenres'))
-        else flash("You're not authorized to edit another user's post.")    
+        else: flash("You're not authorized to edit another user's post.")    
     else:
         return render_template('deletegenre.html', genreToDelete=genreToDelete, genre_id=genre_id)
 
