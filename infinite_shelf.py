@@ -92,10 +92,12 @@ def deleteGenre(genre_id):
         return(redirect('/login'))
     genreToDelete = session.query(Genre).filter_by(id=genre_id).one()
     if request.method == 'POST':
-        session.delete(genreToDelete)
-        session.commit()
-        flash("Genre has been deleted.")
-        return redirect(url_for('showGenres'))
+        if book.user.user_id == user_id:
+            session.delete(genreToDelete)
+            session.commit()
+            flash("Genre has been deleted.")
+            return redirect(url_for('showGenres'))
+        else flash("You're not authorized to edit another user's post.")    
     else:
         return render_template('deletegenre.html', genreToDelete=genreToDelete, genre_id=genre_id)
 
