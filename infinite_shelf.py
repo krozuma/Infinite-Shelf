@@ -28,7 +28,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-# validating current loggedin user
+#validating current loggedin user
 
 def check_user():
     email = login_session['email']
@@ -61,7 +61,8 @@ def newGenre():
     if 'username' not in login_session:
         return(redirect('/login'))
     if request.method == 'POST':
-        newGenre = Genre(name=request.form['name'])
+        user_id = check_user().id
+        newGenre = Genre(name=request.form['name'], user_id=user_id)
         session.add(newGenre)
         session.commit()
         flash("New genre created!")
@@ -91,13 +92,18 @@ def deleteGenre(genre_id):
     if 'username' not in login_session:
         return(redirect('/login'))
     genreToDelete = session.query(Genre).filter_by(id=genre_id).one()
+    
     if request.method == 'POST':
-        if book.user.user_id == user_id:
-            session.delete(genreToDelete)
-            session.commit()
-            flash("Genre has been deleted.")
-            return redirect(url_for('showGenres'))
-        else: flash("You're not authorized to edit another user's post.")    
+         user_id = check_user().id 
+         if user_id == genreToDelete.user_id:
+                session.delete(genreToDelete)
+                session.commit()
+                flash("Genre has been deleted.")
+                return redirect(url_for('showGenres'))
+         else:
+              flash("You're not authorized to edit another user's post.")
+              return redirect(url_for('showGenres')) 	
+	         
     else:
         return render_template('deletegenre.html', genreToDelete=genreToDelete, genre_id=genre_id)
 
@@ -256,8 +262,8 @@ def gconnect():
     # see if user exists, if it doesn't make a new one
     user_id = getUserID(data["email"])
     if not user_id:
-        user_id = createUser(login_session)
-    login_session['user_id'] = user_id
+    	user_id = createUser(login_session)
+    	login_session['user_id'] = user_id
 
     output = ''
     output += '<h1>Welcome, '
