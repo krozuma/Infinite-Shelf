@@ -77,12 +77,14 @@ def editGenre(genre_id):
         return(redirect('/login'))
     editedGenre = session.query(Genre).filter_by(id=genre_id).one()
     if request.method == 'POST':
-        if request.form['name']:
-            editedGenre.name = request.form['name']
-        session.add(editedGenre)
-        session.commit()
-        flash("Genre has been edited.")
-        return(redirect(url_for('showGenres')))
+        user_id = check_user().id
+        if user_id == editedGenre.user_id:
+            if request.form['name']:
+                editedGenre.name = request.form['name']
+                session.add(editedGenre)
+                session.commit()
+                flash("Genre has been edited.")
+                return(redirect(url_for('showGenres')))
     else:
         return(render_template('editgenre.html', genre_id=genre_id, editedGenre=editedGenre))
 
@@ -92,9 +94,8 @@ def deleteGenre(genre_id):
     if 'username' not in login_session:
         return(redirect('/login'))
     genreToDelete = session.query(Genre).filter_by(id=genre_id).one()
-    
     if request.method == 'POST':
-         user_id = check_user().id 
+         user_id = check_user().id
          if user_id == genreToDelete.user_id:
                 session.delete(genreToDelete)
                 session.commit()
@@ -102,8 +103,8 @@ def deleteGenre(genre_id):
                 return redirect(url_for('showGenres'))
          else:
               flash("You're not authorized to edit another user's post.")
-              return redirect(url_for('showGenres')) 	
-	         
+              return redirect(url_for('showGenres'))
+
     else:
         return render_template('deletegenre.html', genreToDelete=genreToDelete, genre_id=genre_id)
 
@@ -134,9 +135,10 @@ def newBook(genre_id):
     if 'username' not in login_session:
         return redirect('/login')
     if request.method == 'POST':
+        user_id = check_user().id
         newItem = Books(name=request.form['name'], author=request.form['author'],
                         description=request.form['description'], price=request.form['price'],
-                        rating=request.form['rating'], genre_id=genre_id)
+                        rating=request.form['rating'], genre_id=genre_id, user_id=user_id)
         session.add(newItem)
         session.commit()
         flash("New book added!")
@@ -151,20 +153,22 @@ def editBook(genre_id, books_id):
         return(redirect('/login'))
     editedItem = session.query(Books).filter_by(id=books_id).one()
     if request.method == 'POST':
-        if request.form['name']:
-            editedItem.name = request.form['name']
-        if request.form['author']:
-            editedItem.author = request.form['author']
-        if request.form['description']:
-            editedItem.description = request.form['description']
-        if request.form['price']:
-            editedItem.price = request.form['price']
-        if request.form['rating']:
-            editedItem.rating = request.form['rating']
-        session.add(editedItem)
-        session.commit()
-        flash("Book listing has been edited.")
-        return(redirect(url_for('showBooks', genre_id=genre_id)))
+        user_id = check_user().id
+        if user_id == editedItem.user_id:
+            if request.form['name']:
+                editedItem.name = request.form['name']
+            if request.form['author']:
+                editedItem.author = request.form['author']
+            if request.form['description']:
+                editedItem.description = request.form['description']
+            if request.form['price']:
+                editedItem.price = request.form['price']
+            if request.form['rating']:
+                editedItem.rating = request.form['rating']
+                session.add(editedItem)
+                session.commit()
+                flash("Book listing has been edited.")
+                return(redirect(url_for('showBooks', genre_id=genre_id)))
     else:
 
         return(render_template('editbook.html', genre_id=genre_id, books_id=books_id, item=editedItem))
@@ -176,10 +180,12 @@ def deleteBook(genre_id, books_id):
         return(redirect('/login'))
     itemToDelete = session.query(Books).filter_by(id=books_id).one()
     if request.method == 'POST':
-        session.delete(itemToDelete)
-        session.commit()
-        flash("Book listing has been deleted.")
-        return(redirect(url_for('showBooks', genre_id=genre_id)))
+        user_id = check_user().id
+        if user_id == editedItem.user_id:
+            session.delete(itemToDelete)
+            session.commit()
+            flash("Book listing has been deleted.")
+            return(redirect(url_for('showBooks', genre_id=genre_id)))
     else:
         return(render_template('deletebook.html', item=itemToDelete, genre_id=genre_id))
 
