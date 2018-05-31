@@ -41,7 +41,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'username' not in login_session:
-            return redirect('/login')
+            return redirect('/')
         return f(*args, **kwargs)
     return decorated_function
 
@@ -142,13 +142,13 @@ def newBook(genre_id):
         session.commit()
         flash("New book added!")
         return(redirect(url_for('showBooks', genre_id=genre_id)))
-    
+
 
 @app.route('/genres/<int:genre_id>/<int:books_id>/edit', methods=['GET', 'POST'])
+@login_required
 def editBook(genre_id, books_id):
-    if 'username' not in login_session:
-        return(redirect('/login'))
     editedItem = session.query(Books).filter_by(id=books_id).one()
+    return(render_template('editbook.html', genre_id=genre_id, books_id=books_id, item=editedItem))
     if request.method == 'POST':
         user_id = check_user().id
         if user_id == editedItem.user_id:
@@ -166,16 +166,13 @@ def editBook(genre_id, books_id):
                 session.commit()
                 flash("Book listing has been edited.")
                 return(redirect(url_for('showBooks', genre_id=genre_id)))
-    else:
-
-        return(render_template('editbook.html', genre_id=genre_id, books_id=books_id, item=editedItem))
 
 
 @app.route('/genres/<int:genre_id>/<int:books_id>/delete', methods=['GET', 'POST'])
+@login_required
 def deleteBook(genre_id, books_id):
-    if 'username' not in login_session:
-        return(redirect('/login'))
     itemToDelete = session.query(Books).filter_by(id=books_id).one()
+    return(render_template('deletebook.html', item=itemToDelete, genre_id=genre_id))
     if request.method == 'POST':
         user_id = check_user().id
         if user_id == itemToDelete.user_id:
@@ -183,9 +180,6 @@ def deleteBook(genre_id, books_id):
             session.commit()
             flash("Book listing has been deleted.")
             return(redirect(url_for('showBooks', genre_id=genre_id)))
-    else:
-        return(render_template('deletebook.html', item=itemToDelete, genre_id=genre_id))
-
 
 
 @app.route('/gconnect', methods=['POST'])
