@@ -181,7 +181,7 @@ def deleteBook(genre_id, books_id):
     itemToDelete = session.query(Books).filter_by(id=books_id).one()
     if request.method == 'POST':
         user_id = check_user().id
-        if user_id == editedItem.user_id:
+        if user_id == itemToDelete.user_id:
             session.delete(itemToDelete)
             session.commit()
             flash("Book listing has been deleted.")
