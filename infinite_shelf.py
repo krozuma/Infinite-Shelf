@@ -11,6 +11,7 @@ import httplib2
 import json
 from flask import make_response
 import requests
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -25,6 +26,22 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
+#validating current loggedin user
+def check_user():
+    email = login_session['email']
+return session.query(User).filter_by(email=email).one_or_none()
+
+
+#Flask login decorator function
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in login_session:
+            return redirect('/')
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 @app.route('/login')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
@@ -36,33 +53,29 @@ def showLogin():
 
 @app.route('/')
 @app.route('/genres')
+@login_required
 def showGenres():
     genres = session.query(Genre).order_by(Genre.name.asc()).all()
-    if 'username' not in login_session:
-        return render_template('publicgenres.html', genres=genres)
-    else:
-        return render_template('genres.html', genres=genres)
+    return render_template('genres.html', genres=genres)
 
 
 @app.route('/genres/new', methods=['GET', 'POST'])
+@login_required
 def newGenre():
-    if 'username' not in login_session:
-        return(redirect('/login'))
+    return(render_template('newgenre.html'))
     if request.method == 'POST':
         newGenre = Genre(name=request.form['name'])
         session.add(newGenre)
         session.commit()
         flash("New genre created!")
         return(redirect(url_for('showGenres')))
-    else:
-        return(render_template('newgenre.html'))
 
 
 @app.route('/genres/<int:genre_id>/edit', methods=['GET', 'POST'])
+@login_required
 def editGenre(genre_id):
-    if 'username' not in login_session:
-        return(redirect('/login'))
     editedGenre = session.query(Genre).filter_by(id=genre_id).one()
+    return(render_template('editgenre.html', genre_id=genre_id, editedGenre=editedGenre))
     if request.method == 'POST':
         if request.form['name']:
             editedGenre.name = request.form['name']
@@ -70,22 +83,18 @@ def editGenre(genre_id):
         session.commit()
         flash("Genre has been edited.")
         return(redirect(url_for('showGenres')))
-    else:
-        return(render_template('editgenre.html', genre_id=genre_id, editedGenre=editedGenre))
 
 
 @app.route('/genres/<int:genre_id>/delete', methods=['GET', 'POST'])
+@login_required
 def deleteGenre(genre_id):
-    if 'username' not in login_session:
-        return(redirect('/login'))
     genreToDelete = session.query(Genre).filter_by(id=genre_id).one()
+    return render_template('deletegenre.html', genreToDelete=genreToDelete, genre_id=genre_id)
     if request.method == 'POST':
         session.delete(genreToDelete)
         session.commit()
         flash("Genre has been deleted.")
         return redirect(url_for('showGenres'))
-    else:
-        return render_template('deletegenre.html', genreToDelete=genreToDelete, genre_id=genre_id)
 
 
 @app.route('/genres/<int:genre_id>')
@@ -110,9 +119,9 @@ def showBook(books_id):
 
 
 @app.route('/genres/<int:genre_id>/books/new', methods=['GET', 'POST'])
+@login_required
 def newBook(genre_id):
-    if 'username' not in login_session:
-        return redirect('/login')
+    return render_template('newbook.html', genre_id=genre_id)
     if request.method == 'POST':
         newItem = Books(name=request.form['name'], author=request.form['author'],
                         description=request.form['description'], price=request.form['price'],
@@ -121,14 +130,12 @@ def newBook(genre_id):
         session.commit()
         flash("New book added!")
         return(redirect(url_for('showBooks', genre_id=genre_id)))
-    else:
-        return render_template('newbook.html', genre_id=genre_id)
 
 
 @app.route('/genres/<int:genre_id>/<int:books_id>/edit', methods=['GET', 'POST'])
+@login_required
 def editBook(genre_id, books_id):
-    if 'username' not in login_session:
-        return(redirect('/login'))
+    return(render_template('editbook.html', genre_id=genre_id, books_id=books_id, item=editedItem))
     editedItem = session.query(Books).filter_by(id=books_id).one()
     if request.method == 'POST':
         if request.form['name']:
@@ -145,24 +152,19 @@ def editBook(genre_id, books_id):
         session.commit()
         flash("Book listing has been edited.")
         return(redirect(url_for('showBooks', genre_id=genre_id)))
-    else:
-
-        return(render_template('editbook.html', genre_id=genre_id, books_id=books_id, item=editedItem))
 
 
 @app.route('/genres/<int:genre_id>/<int:books_id>/delete', methods=['GET', 'POST'])
+@login_required
 def deleteBook(genre_id, books_id):
-    if 'username' not in login_session:
-        return(redirect('/login'))
+    return(render_template('deletebook.html', item=itemToDelete, genre_id=genre_id))
     itemToDelete = session.query(Books).filter_by(id=books_id).one()
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
         flash("Book listing has been deleted.")
         return(redirect(url_for('showBooks', genre_id=genre_id)))
-    else:
-        return(render_template('deletebook.html', item=itemToDelete, genre_id=genre_id))
-
+    
 
 @app.route('/fbconnect', methods=['POST', 'GET'])
 def fbconnect():
