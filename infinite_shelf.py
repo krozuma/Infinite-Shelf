@@ -29,7 +29,7 @@ session = DBSession()
 #validating current loggedin user
 def check_user():
     email = login_session['email']
-return session.query(User).filter_by(email=email).one_or_none()
+    return session.query(User).filter_by(email=email).one_or_none()
 
 
 #Flask login decorator function
@@ -39,7 +39,7 @@ def login_required(f):
         if 'username' not in login_session:
             return redirect('/')
         return f(*args, **kwargs)
-    return decorated_function
+        return decorated_function
 
 
 @app.route('/login')
@@ -164,7 +164,7 @@ def deleteBook(genre_id, books_id):
         session.commit()
         flash("Book listing has been deleted.")
         return(redirect(url_for('showBooks', genre_id=genre_id)))
-    
+
 
 @app.route('/fbconnect', methods=['POST', 'GET'])
 def fbconnect():
