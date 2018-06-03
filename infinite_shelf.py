@@ -37,9 +37,9 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'username' not in login_session:
-            return redirect('/')
+            return redirect('/login')
         return f(*args, **kwargs)
-        return decorated_function
+    return decorated_function
 
 
 @app.route('/login')
@@ -64,7 +64,8 @@ def showGenres():
 def newGenre():
     return(render_template('newgenre.html'))
     if request.method == 'POST':
-        newGenre = Genre(name=request.form['name'])
+        user_id = check_user().id
+        newGenre = Genre(name=request.form['name'], user_id=user_id)
         session.add(newGenre)
         session.commit()
         flash("New genre created!")
@@ -420,4 +421,4 @@ def getBooksJSON(genre_id):
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8000, threaded = False)
