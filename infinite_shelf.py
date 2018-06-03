@@ -141,6 +141,8 @@ def newBook(genre_id):
         session.commit()
         flash("New book added!")
         return(redirect(url_for('showBooks', genre_id=genre_id)))
+    else:
+        return render_template('newbook.html', genre_id=genre_id)
 
 
 @app.route('/genres/<int:genre_id>/<int:books_id>/edit', methods=['GET', 'POST'])
