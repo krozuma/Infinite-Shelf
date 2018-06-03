@@ -62,8 +62,8 @@ def showGenres():
 @app.route('/genres/new', methods=['GET', 'POST'])
 @login_required
 def newGenre():
-    return(render_template('newgenre.html'))
     if request.method == 'POST':
+        return(render_template('newgenre.html'))
         user_id = check_user().id
         newGenre = Genre(name=request.form['name'], user_id=user_id)
         session.add(newGenre)
@@ -76,8 +76,8 @@ def newGenre():
 @login_required
 def editGenre(genre_id):
     editedGenre = session.query(Genre).filter_by(id=genre_id).one()
-    return(render_template('editgenre.html', genre_id=genre_id, editedGenre=editedGenre))
     if request.method == 'POST':
+        return(render_template('editgenre.html', genre_id=genre_id, editedGenre=editedGenre))
         user_id = check_user().id
         if user_id == editedGenre.user_id:
             if request.form['name']:
@@ -95,8 +95,8 @@ def editGenre(genre_id):
 @login_required
 def deleteGenre(genre_id):
     genreToDelete = session.query(Genre).filter_by(id=genre_id).one()
-    return render_template('deletegenre.html', genreToDelete=genreToDelete, genre_id=genre_id)
     if request.method == 'POST':
+        return render_template('deletegenre.html', genreToDelete=genreToDelete, genre_id=genre_id)
         user_id = check_user().id
         if user_id == genreToDelete.user_id:
             session.delete(genreToDelete)
@@ -131,8 +131,8 @@ def showBook(books_id):
 @app.route('/genres/<int:genre_id>/books/new', methods=['GET', 'POST'])
 @login_required
 def newBook(genre_id):
-    return render_template('newbook.html', genre_id=genre_id)
     if request.method == 'POST':
+        return render_template('newbook.html', genre_id=genre_id)
         user_id = check_user().id
         newItem = Books(name=request.form['name'], author=request.form['author'],
                         description=request.form['description'], price=request.form['price'],
@@ -146,9 +146,9 @@ def newBook(genre_id):
 @app.route('/genres/<int:genre_id>/<int:books_id>/edit', methods=['GET', 'POST'])
 @login_required
 def editBook(genre_id, books_id):
-    return(render_template('editbook.html', genre_id=genre_id, books_id=books_id, item=editedItem))
     editedItem = session.query(Books).filter_by(id=books_id).one()
     if request.method == 'POST':
+        return(render_template('editbook.html', genre_id=genre_id, books_id=books_id, item=editedItem))
         user_id = check_user().id
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -169,9 +169,9 @@ def editBook(genre_id, books_id):
 @app.route('/genres/<int:genre_id>/<int:books_id>/delete', methods=['GET', 'POST'])
 @login_required
 def deleteBook(genre_id, books_id):
-    return(render_template('deletebook.html', item=itemToDelete, genre_id=genre_id))
     itemToDelete = session.query(Books).filter_by(id=books_id).one()
     if request.method == 'POST':
+        return(render_template('deletebook.html', item=itemToDelete, genre_id=genre_id))
         user_id = check_user().id
         if user_id == itemToDelete.user_id:
             session.delete(itemToDelete)
