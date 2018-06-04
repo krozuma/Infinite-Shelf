@@ -152,20 +152,24 @@ def editBook(genre_id, books_id):
     editedItem = session.query(Books).filter_by(id=books_id).one()
     if request.method == 'POST':
         user_id = check_user().id
-        if request.form['name']:
-            editedItem.name = request.form['name']
-        if request.form['author']:
-            editedItem.author = request.form['author']
-        if request.form['description']:
-            editedItem.description = request.form['description']
-        if request.form['price']:
-            editedItem.price = request.form['price']
-        if request.form['rating']:
-            editedItem.rating = request.form['rating']
-            session.add(editedItem)
-            session.commit()
-            flash("Book listing has been edited.")
-            return(redirect(url_for('showBooks', genre_id=genre_id)))
+        if user_id == editedItem.user_id:
+            if request.form['name']:
+                editedItem.name = request.form['name']
+            if request.form['author']:
+                editedItem.author = request.form['author']
+            if request.form['description']:
+                editedItem.description = request.form['description']
+            if request.form['price']:
+                editedItem.price = request.form['price']
+            if request.form['rating']:
+                editedItem.rating = request.form['rating']
+                session.add(editedItem)
+                session.commit()
+                flash("Book listing has been edited.")
+                return(redirect(url_for('showBooks', genre_id=genre_id)))
+        else:
+            flash("You're not authorized to edit another user's post.")
+            return redirect(url_for('showBooks'))
     else:
         return(render_template('editbook.html', genre_id=genre_id, books_id=books_id, item=editedItem))
 
@@ -181,6 +185,9 @@ def deleteBook(genre_id, books_id):
             session.commit()
             flash("Book listing has been deleted.")
             return(redirect(url_for('showBooks', genre_id=genre_id)))
+        else:
+            flash("You're not authorized to edit another user's post.")
+            return redirect(url_for('showBooks'))
     else:
         return(render_template('deletebook.html', item=itemToDelete, genre_id=genre_id))
 
