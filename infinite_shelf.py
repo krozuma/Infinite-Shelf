@@ -9,6 +9,7 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
 import json
+import os
 from flask import make_response
 import requests
 from functools import wraps
@@ -63,21 +64,20 @@ def showGenres():
 @login_required
 def newGenre():
     if request.method == 'POST':
-        return(render_template('newgenre.html'))
         user_id = check_user().id
         newGenre = Genre(name=request.form['name'], user_id=user_id)
         session.add(newGenre)
         session.commit()
         flash("New genre created!")
         return(redirect(url_for('showGenres')))
-
+    else:
+        return(render_template('newgenre.html'))
 
 @app.route('/genres/<int:genre_id>/edit', methods=['GET', 'POST'])
 @login_required
 def editGenre(genre_id):
     editedGenre = session.query(Genre).filter_by(id=genre_id).one()
     if request.method == 'POST':
-        return(render_template('editgenre.html', genre_id=genre_id, editedGenre=editedGenre))
         user_id = check_user().id
         if user_id == editedGenre.user_id:
             if request.form['name']:
@@ -89,14 +89,14 @@ def editGenre(genre_id):
             else:
               flash("You're not authorized to edit another user's post.")
               return redirect(url_for('showGenres'))
-
+    else:
+        return(render_template('editgenre.html', genre_id=genre_id, editedGenre=editedGenre))
 
 @app.route('/genres/<int:genre_id>/delete', methods=['GET', 'POST'])
 @login_required
 def deleteGenre(genre_id):
     genreToDelete = session.query(Genre).filter_by(id=genre_id).one()
     if request.method == 'POST':
-        return render_template('deletegenre.html', genreToDelete=genreToDelete, genre_id=genre_id)
         user_id = check_user().id
         if user_id == genreToDelete.user_id:
             session.delete(genreToDelete)
@@ -106,6 +106,8 @@ def deleteGenre(genre_id):
         else:
             flash("You're not authorized to edit another user's post.")
             return redirect(url_for('showGenres'))
+    else:
+        return render_template('deletegenre.html', genreToDelete=genreToDelete, genre_id=genre_id)
 
 @app.route('/genres/<int:genre_id>')
 @app.route('/genres/<int:genre_id>/books')
@@ -132,7 +134,6 @@ def showBook(books_id):
 @login_required
 def newBook(genre_id):
     if request.method == 'POST':
-        return render_template('newbook.html', genre_id=genre_id)
         user_id = check_user().id
         newItem = Books(name=request.form['name'], author=request.form['author'],
                         description=request.form['description'], price=request.form['price'],
@@ -150,7 +151,6 @@ def newBook(genre_id):
 def editBook(genre_id, books_id):
     editedItem = session.query(Books).filter_by(id=books_id).one()
     if request.method == 'POST':
-        return(render_template('editbook.html', genre_id=genre_id, books_id=books_id, item=editedItem))
         user_id = check_user().id
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -166,6 +166,8 @@ def editBook(genre_id, books_id):
             session.commit()
             flash("Book listing has been edited.")
             return(redirect(url_for('showBooks', genre_id=genre_id)))
+    else:
+        return(render_template('editbook.html', genre_id=genre_id, books_id=books_id, item=editedItem))
 
 
 @app.route('/genres/<int:genre_id>/<int:books_id>/delete', methods=['GET', 'POST'])
@@ -173,14 +175,14 @@ def editBook(genre_id, books_id):
 def deleteBook(genre_id, books_id):
     itemToDelete = session.query(Books).filter_by(id=books_id).one()
     if request.method == 'POST':
-        return(render_template('deletebook.html', item=itemToDelete, genre_id=genre_id))
         user_id = check_user().id
         if user_id == itemToDelete.user_id:
             session.delete(itemToDelete)
             session.commit()
             flash("Book listing has been deleted.")
             return(redirect(url_for('showBooks', genre_id=genre_id)))
-
+    else:
+        return(render_template('deletebook.html', item=itemToDelete, genre_id=genre_id))
 
 @app.route('/fbconnect', methods=['POST', 'GET'])
 def fbconnect():
