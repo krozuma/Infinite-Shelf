@@ -6,13 +6,13 @@
     <p>Title:</p>
     <input type = 'text' size='30' name = 'name' placeholder = '{{item.name}}'>
     <p>Author:</p>
-    <input type = 'text' size='30' name = 'name' placeholder = '{{item.author}}'>
+    <input type = 'text' size='30' name = 'author' placeholder = '{{item.author}}'>
     <p>Description:</p>
     <input type="text" size="50" name = "description" placeholder= "{{item.description}}">
     <p>Price:</p>
     <input type = "text" size="30" name="price" placeholder="{{item.price}}">
     <p>Rating:</p>
-    <input type="text" size="30" name="course" placeholder="{{item.rating}}">
+    <input type="text" size="30" name="rating" placeholder="{{item.rating}}">
     <input type='submit' value='Edit'>
 </form>
 <a href= '{{url_for('showBooks', genre_id= item.genre_id)}}'>Cancel</a>
