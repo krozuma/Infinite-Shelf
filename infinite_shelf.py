@@ -87,7 +87,7 @@ def editGenre(genre_id):
                 flash("Genre has been edited.")
                 return(redirect(url_for('showGenres')))
             else:
-              flash("You're not authorized to edit another user's post.")
+              flash("You're not authorized to edit another user's genre.")
               return redirect(url_for('showGenres'))
     else:
         return(render_template('editgenre.html', genre_id=genre_id, editedGenre=editedGenre))
@@ -104,7 +104,7 @@ def deleteGenre(genre_id):
             flash("Genre has been deleted.")
             return redirect(url_for('showGenres'))
         else:
-            flash("You're not authorized to edit another user's post.")
+            flash("You're not authorized to delete another user's genre.")
             return redirect(url_for('showGenres'))
     else:
         return render_template('deletegenre.html', genreToDelete=genreToDelete, genre_id=genre_id)
@@ -168,7 +168,7 @@ def editBook(genre_id, books_id):
                 flash("Book listing has been edited.")
                 return(redirect(url_for('showBooks', genre_id=genre_id)))
         else:
-            flash("You're not authorized to edit another user's post.")
+            flash("You're not authorized to edit another user's book.")
             return redirect(url_for('showBooks'))
     else:
         return(render_template('editbook.html', genre_id=genre_id, books_id=books_id, item=editedItem))
@@ -186,7 +186,7 @@ def deleteBook(genre_id, books_id):
             flash("Book listing has been deleted.")
             return(redirect(url_for('showBooks', genre_id=genre_id)))
         else:
-            flash("You're not authorized to edit another user's post.")
+            flash("You're not authorized to delete another user's book.")
             return redirect(url_for('showBooks'))
     else:
         return(render_template('deletebook.html', item=itemToDelete, genre_id=genre_id))
