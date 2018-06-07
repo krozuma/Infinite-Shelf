@@ -387,9 +387,12 @@ def getBooksJSON(genre_id):
 
 
 @app.route('/genres/<int:books_id>/JSON', methods=['GET'])
-def getBookJSON(book_id):
+@app.route('/genres/<int:books_id>/book/JSON')
+def getBookJSON(books_id):
     book = session.query(Books).filter_by(id=books_id).one()
-    return jsonify(Book=[i.list for i in book])
+    return jsonify({"name": book.name, "author": book.author,
+                    "description": book.description, "price": book.price,
+                    "rating": book.rating})
 
 
 if __name__ == '__main__':
