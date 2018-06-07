@@ -1,10 +1,12 @@
 from sqlalchemy import asc
-from flask import Flask, render_template, url_for, request, flash, redirect, jsonify
+from flask import Flask, render_template, url_for, request, flash, redirect, \
+    jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Genre, Books
 from flask import session as login_session
-import random, string
+import random
+import string
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
@@ -27,13 +29,13 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-#validating current loggedin user
+# Validating current loggedin user
 def check_user():
     email = login_session['email']
     return session.query(User).filter_by(email=email).one_or_none()
 
 
-#Flask login decorator function
+# Flask login decorator function
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -73,6 +75,7 @@ def newGenre():
     else:
         return(render_template('newgenre.html'))
 
+
 @app.route('/genres/<int:genre_id>/edit', methods=['GET', 'POST'])
 @login_required
 def editGenre(genre_id):
@@ -86,11 +89,13 @@ def editGenre(genre_id):
                 session.commit()
                 flash("Genre has been edited.")
                 return(redirect(url_for('showGenres')))
-            else:
-              flash("You're not authorized to edit another user's genre.")
-              return redirect(url_for('showGenres'))
+        else:
+            flash("You're not authorized to edit another user's genre.")
+            return redirect(url_for('showGenres'))
     else:
-        return(render_template('editgenre.html', genre_id=genre_id, editedGenre=editedGenre))
+        return(render_template(
+            'editgenre.html', genre_id=genre_id, editedGenre=editedGenre))
+
 
 @app.route('/genres/<int:genre_id>/delete', methods=['GET', 'POST'])
 @login_required
@@ -107,17 +112,22 @@ def deleteGenre(genre_id):
             flash("You're not authorized to delete another user's genre.")
             return redirect(url_for('showGenres'))
     else:
-        return render_template('deletegenre.html', genreToDelete=genreToDelete, genre_id=genre_id)
+        return render_template(
+            'deletegenre.html', genreToDelete=genreToDelete, genre_id=genre_id)
+
 
 @app.route('/genres/<int:genre_id>')
 @app.route('/genres/<int:genre_id>/books')
 def showBooks(genre_id):
     genre = session.query(Genre).filter_by(id=genre_id).one()
-    items = session.query(Books).filter_by(genre_id=genre_id).order_by(Books.name.asc())
+    items = session.query(Books).filter_by(
+        genre_id=genre_id).order_by(Books.name.asc())
     if 'username' not in login_session:
-        return render_template('publicbooks.html', genre=genre, items=items, genre_id=genre_id)
+        return render_template(
+            'publicbooks.html', genre=genre, items=items, genre_id=genre_id)
     else:
-        return render_template('books.html', genre=genre, items=items, genre_id=genre_id)
+        return render_template(
+            'books.html', genre=genre, items=items, genre_id=genre_id)
 
 
 @app.route('/genres/<int:books_id>')
@@ -125,9 +135,12 @@ def showBooks(genre_id):
 def showBook(books_id):
     selected_book = session.query(Books).filter_by(id=books_id).one()
     if 'username' not in login_session:
-        return render_template('publicshowbook.html', books_id=books_id, selected_book=selected_book)
+        return render_template(
+            'publicshowbook.html', books_id=books_id,
+            selected_book=selected_book)
     else:
-        return render_template('showbook.html', books_id=books_id, selected_book=selected_book)
+        return render_template(
+            'showbook.html', books_id=books_id, selected_book=selected_book)
 
 
 @app.route('/genres/<int:genre_id>/books/new', methods=['GET', 'POST'])
@@ -135,9 +148,11 @@ def showBook(books_id):
 def newBook(genre_id):
     if request.method == 'POST':
         user_id = check_user().id
-        newItem = Books(name=request.form['name'], author=request.form['author'],
-                        description=request.form['description'], price=request.form['price'],
-                        rating=request.form['rating'], genre_id=genre_id, user_id=user_id)
+        newItem = Books(
+            name=request.form['name'], author=request.form['author'],
+            description=request.form['description'],
+            price=request.form['price'],
+            rating=request.form['rating'], genre_id=genre_id, user_id=user_id)
         session.add(newItem)
         session.commit()
         flash("New book added!")
@@ -146,7 +161,8 @@ def newBook(genre_id):
         return render_template('newbook.html', genre_id=genre_id)
 
 
-@app.route('/genres/<int:genre_id>/<int:books_id>/edit', methods=['GET', 'POST'])
+@app.route('/genres/<int:genre_id>/<int:books_id>/edit',
+           methods=['GET', 'POST'])
 @login_required
 def editBook(genre_id, books_id):
     editedItem = session.query(Books).filter_by(id=books_id).one()
@@ -169,12 +185,15 @@ def editBook(genre_id, books_id):
                 return(redirect(url_for('showBooks', genre_id=genre_id)))
         else:
             flash("You're not authorized to edit another user's book.")
-            return redirect(url_for('showBooks'))
+            return redirect(url_for('showBooks', genre_id=genre_id))
     else:
-        return(render_template('editbook.html', genre_id=genre_id, books_id=books_id, item=editedItem))
+        return(render_template(
+            'editbook.html', genre_id=genre_id, books_id=books_id,
+            item=editedItem))
 
 
-@app.route('/genres/<int:genre_id>/<int:books_id>/delete', methods=['GET', 'POST'])
+@app.route('/genres/<int:genre_id>/<int:books_id>/delete',
+           methods=['GET', 'POST'])
 @login_required
 def deleteBook(genre_id, books_id):
     itemToDelete = session.query(Books).filter_by(id=books_id).one()
@@ -187,9 +206,10 @@ def deleteBook(genre_id, books_id):
             return(redirect(url_for('showBooks', genre_id=genre_id)))
         else:
             flash("You're not authorized to delete another user's book.")
-            return redirect(url_for('showBooks'))
+            return redirect(url_for('showBooks', genre_id=genre_id))
     else:
-        return(render_template('deletebook.html', item=itemToDelete, genre_id=genre_id))
+        return(render_template(
+            'deletebook.html', item=itemToDelete, genre_id=genre_id))
 
 
 @app.route('/gconnect', methods=['POST'])
@@ -244,8 +264,8 @@ def gconnect():
     stored_credentials = login_session.get('credentials')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_credentials is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(json.dumps(
+           'Current user is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -366,7 +386,13 @@ def getBooksJSON(genre_id):
     return jsonify(BookList=[i.serialize for i in bookList])
 
 
+@app.route('/genres/<int:books_id>/JSON', methods=['GET'])
+def getBookJSON(book_id):
+    book = session.query(Books).filter_by(id=books_id).one()
+    return jsonify(Book=[i.list for i in book])
+
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
-    app.run(host='0.0.0.0', port=8000, threaded = False)
+    app.run(host='0.0.0.0', port=8000, threaded=False)
