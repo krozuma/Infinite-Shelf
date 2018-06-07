@@ -6,7 +6,7 @@
   <h3 class="title">{{selected_book.name}}</h3>
   <p>{{selected_book.author}}</p>
   <p>{{selected_book.description}}</p>
-  <p>{{selected_book.price}}</p>
+  <p>${{selected_book.price}}</p>
   <div id="stars">
   {% if selected_book.rating == 1 %}
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/1_stars.svg/535px-1_stars.svg.png" class="img-responsive" alt="One out of five stars">
